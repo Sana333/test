@@ -1,0 +1,30 @@
+# Disable magic quotes -  Отключить волшебные кавычки
+php_flag magic_quotes_gpc 0
+php_flag magic_quotes_runtime 0
+
+# Turn on URL rewriting Включаем модуль переписывания
+RewriteEngine On
+
+# Installation directory  Путь до корня сайта- папка...- ки, с которой нужно начинать применять все правила
+#у него так   RewriteBase /hp2-08-src/hp2-08-src/   , так как сайт нахoд. в двух папках, и + корневая
+#                   hw/hp2-08-src/hp2-08-src/articles/index   1 chas 39
+#на самом деле был запрошен адрес(url, кот на самом деле выполнился):
+#     hw/hp2-08-src/hp2-08-src/index.php?q=articles/index
+#а в строке запроса мы видим(У него)   hw/hp2-08-src/hp2-08-src/page/index
+RewriteBase /magic.perfume/
+
+#- если адрес указывает на имя файла     !-f
+#или на директорию (папку)     !-d     ,
+#которые существуют, то тогда ничего с этим адресом делать не надо
+#если папки или файла не существует, то начинает работать правило 1 час 45
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Rewrite all other URLs to index.php/URL  Правила изменения URL-адреса
+#всё,     .*     что было введено, запихивается в параметр     q
+#в параметр «q» передаётся та часть адреса, которая не является доменным именем
+#//  http://hp2-08-2-src/99/rie/ski/dkdi    по этой ссылке выдаёт:
+# //array(4) { ["q1"]=> string(3) "ski" ["q2"]=> string(3) "rie" ["q3"]=> string(2) "99" ["q4"]=> string(15) "99/rie/ski/dkdi" }
+RewriteRule .* index.php?q=$0
+#  реализация htaccess могло быть и так:
+#RewriteRule ^(.*)$ index.php
